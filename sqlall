@@ -1,0 +1,45 @@
+#!/bin/bash
+# execute all sql scripts in directory
+
+user=$1
+dir=$2
+
+# display help
+if [ -x $user ] || [ $user = '?' ]
+then
+  echo "sqlall username [directory]"
+  exit
+fi
+
+# check directory
+if [ -x $dir ]
+then
+  echo here
+  dir=$PWD
+else
+
+  if [ ! -d $dir ]
+  then
+    echo "Sorry, directory $dir does not exist."
+    exit
+  fi
+
+fi
+
+echo "Starting to execute all sql in $dir"
+echo "Using oracle instance: $ORACLE_SID"
+
+echo "Password:"
+read -s pass
+echo
+
+list=`ls $dir/*.sql`
+
+for scriptname in $list
+do
+
+   echo "executing script: $scriptname"
+   sqlplus -s $user/$pass@$ORACLE_SID @$scriptname
+
+done
+exit

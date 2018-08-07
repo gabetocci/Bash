@@ -1,0 +1,55 @@
+#!/usr/bin/env bash
+# compare md5 hash of 2 files passed as cli arguments
+
+verbose=0
+
+# check command syntax
+if [ -z "$1" ]
+  then
+    printf "Missing argument. Syntax example:$ fcomp /path/to/file1.txt /path/to/file2.txt [-v]\n"
+    exit 2
+elif ! [ -e "$2" ]
+  then
+    printf "Missing argument. Syntax example:$ fcomp /path/to/file1.txt /path/to/file2.txt [-v]\n"
+    exit 2
+elif ! [ -e "$1" ];
+then
+    printf "%s not found\n" "$1"
+    exit 2
+elif ! [ -e "$2" ]
+then
+    printf "%s not found\n" "$2"
+    exit 2
+fi
+
+if [ "-v" = "$3" ]; then
+  verbose=1
+fi
+
+# get file hashes
+file1_md5=$( md5sum "$1" | awk '{print $1}')
+file2_md5=$( md5sum "$2" | awk '{print $1}')
+
+# compare hashes and print result
+if [ "x$file1_md5" = "x$file2_md5" ]
+then
+  if [ "$verbose" = 1 ]; then
+    printf "Files %s and %s are the SAME\n" "$1" "$2"
+    printf "md5sum=%s %s\n" "$file1_md5" "$1"
+    printf "md5sum=%s %s\n" "$file2_md5" "$2"
+  else
+    printf "match\n"
+  fi
+  exit 0
+else
+  if [ "$verbose" = 1 ]; then
+    printf "Files %s and %s are DIFFERENT\n" "$1" "$2"
+    printf "md5sum=%s %s\n" "$file1_md5" "$1"
+    printf "md5sum=%s %s\n" "$file2_md5" "$2"
+  else
+    printf "nomatch\n"
+  fi
+  exit 1
+fi
+
+exit 2

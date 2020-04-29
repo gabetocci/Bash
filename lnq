@@ -4,11 +4,6 @@
 i=$(ls -i $1 | awk '{print $1}' | head -1l)
 echo inode# $i
 
-s=`find / -inum "$i" 2>/dev/null`
+find $BANNER_HOME -inum "$i"
 
-arr=$(echo $s | tr " " "\n")
-
-for x in $arr
-do
-  echo "$x"
-done
+exit 0
